@@ -1,0 +1,231 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║            SISTEMA DE CHECKOUT E-COMMERCE - SOLID EM JAVA           ║
+║                    INSTRUÇÕES DE USO RÁPIDO                         ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+📦 ARQUIVOS INCLUSOS:
+───────────────────────────────────────────────────────────────────────
+
+✓ 16 classes Java (.java)
+  - 4 Entidades de Domínio
+  - 3 Interfaces/Abstrações
+  - 2 Serviços/Controladoras
+  - 3 Implementações de Pagamento
+  - 2 Implementações de Notificação
+  - 1 Repositório em Memória
+  - 1 Classe Main com grafo de objetos
+
+✓ 1 README.md (documentação completa)
+✓ 1 .gitignore (configurado para Maven/Java)
+✓ Estrutura de pastas pronta para IDE
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 COMO EXECUTAR:
+
+1) USANDO IDE (Recomendado - IntelliJ IDEA, Eclipse, VS Code)
+   ─────────────────────────────────────────────────────────
+   a) Abrir a pasta do projeto na IDE
+   b) IDE detectará automaticamente a estrutura Java
+   c) Clicar em "Run Main.java"
+   d) Ver saída no console
+
+2) PELA LINHA DE COMANDO (Java + Javac)
+   ─────────────────────────────────────────────────────────
+   
+   WINDOWS:
+   --------
+   cd ecommerce-checkout-solid
+   
+   # Compilar todas as classes
+   javac -d out/production/src ^
+     src/main/java/com/ecommerce/checkout/domain/exception/*.java ^
+     src/main/java/com/ecommerce/checkout/domain/entity/*.java ^
+     src/main/java/com/ecommerce/checkout/gateway/*.java ^
+     src/main/java/com/ecommerce/checkout/payment/*.java ^
+     src/main/java/com/ecommerce/checkout/notification/*.java ^
+     src/main/java/com/ecommerce/checkout/application/service/*.java ^
+     src/main/java/com/ecommerce/checkout/Main.java
+   
+   # Executar
+   java -cp out/production/src com.ecommerce.checkout.Main
+   
+   LINUX / macOS:
+   ───────────────
+   cd ecommerce-checkout-solid
+   
+   # Compilar todas as classes (versão simplificada)
+   find src -name "*.java" | xargs javac -d out/production/src
+   
+   # Executar
+   java -cp out/production/src com.ecommerce.checkout.Main
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 SAÍDA ESPERADA:
+
+Você verá:
+
+1) CENÁRIO 1 - Pedido com PIX
+   - Criação do pedido com 2 itens
+   - Processamento de pagamento via Pix
+   - Notificações por Email e WhatsApp
+   - Status final: PAGAMENTO_APROVADO
+
+2) CENÁRIO 2 - Pedido com CARTÃO
+   - Criação do pedido com 3 itens
+   - Processamento de pagamento via Cartão
+   - Notificações por Email e WhatsApp
+   - Status final: PAGAMENTO_APROVADO ou RECUSADO (aleatório)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏆 CONFORMIDADE SOLID GARANTIDA:
+
+✓ [S] Single Responsibility Principle
+  └─ Cada classe tem UMA responsabilidade clara
+  └─ Ex: Pagamento gerencia APENAS estado de pagamento
+
+✓ [O] Open/Closed Principle
+  └─ Aberto para extensão (novos métodos de pagamento)
+  └─ Fechado para modificação (nenhuma classe precisa ser modificada)
+  └─ Ex: Adicionar PagamentoApplePay SEM modificar nada!
+
+✓ [L] Liskov Substitution Principle
+  └─ Todas as implementações cumprem contrato
+  └─ SEM UnsupportedOperationException ou exceções inesperadas
+  └─ Qualquer ProcessadorPagamento pode substituir outro
+
+✓ [I] Interface Segregation Principle
+  └─ Interfaces pequenas (1-3 métodos) e específicas
+  └─ ProcessadorPagamento: 2 métodos
+  └─ CanalNotificacao: 4 métodos
+  └─ RepositorioPedidos: 3 métodos
+  └─ Ninguém é forçado a depender de métodos não utilizados
+
+✓ [D] Dependency Inversion Principle
+  └─ Alto-nível depende de abstrações (interfaces)
+  └─ Injeção manual de dependências via construtor
+  └─ PROIBIDO: Usar 'new' dentro dos serviços
+  └─ OrquestradorPedidos recebe tudo via construtor
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 ESTRUTURA DE PACOTES:
+
+com.ecommerce.checkout
+├── domain/
+│   ├── entity/           ← Entidades de domínio (SRP)
+│   └── exception/        ← Exceções customizadas
+├── gateway/              ← Interfaces (ISP, DIP)
+├── application/service/  ← Serviços de aplicação
+├── payment/              ← Processadores de pagamento (OCP)
+├── notification/         ← Canais de notificação (OCP)
+└── Main.java             ← Ponto de entrada (DI manual)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔌 COMO ADICIONAR NOVO MÉTODO DE PAGAMENTO:
+
+1. Criar nova classe:
+   
+   public class PagamentoTransferencia implements ProcessadorPagamento {
+       @Override
+       public boolean processar(Pagamento pagamento) {
+           // Sua implementação aqui
+           pagamento.marcarComoaprovado("TRF-123456");
+           return true;
+       }
+       
+       @Override
+       public String obterMetodoPagamento() {
+           return "Transferência Bancária";
+       }
+   }
+
+2. Usar no Main:
+   
+   ProcessadorPagamento processador = new PagamentoTransferencia();
+   ServicoPagamento servico = new ServicoPagamento(processador);
+   orquestrador.executarCheckout(pedido, servico);
+
+✓ NENHUMA OUTRA CLASSE PRECISA SER MODIFICADA!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔔 COMO ADICIONAR NOVO CANAL DE NOTIFICAÇÃO:
+
+1. Criar nova classe:
+   
+   public class NotificacaoSMS implements CanalNotificacao {
+       @Override
+       public void notificarConfirmacao(Pedido pedido) { /* ... */ }
+       
+       @Override
+       public void notificarPagamentoAprovado(Pedido pedido) { /* ... */ }
+       
+       @Override
+       public void notificarFalhaPagamento(Pedido pedido) { /* ... */ }
+       
+       @Override
+       public String obterCanal() { return "SMS"; }
+   }
+
+2. Adicionar no Main:
+   
+   List<CanalNotificacao> canais = Arrays.asList(
+       new NotificacaoEmail(),
+       new NotificacaoWhatsApp(),
+       new NotificacaoSMS()  // ← Novo!
+   );
+   
+   OrquestradorPedidos orquestrador = 
+       new OrquestradorPedidos(repositorio, canais);
+
+✓ TUDO FUNCIONARÁ SEM MODIFICAR OUTRAS CLASSES!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 LEIA O README.md PARA:
+
+✓ Documentação completa de todas as classes
+✓ Explicação detalhada de cada princípio SOLID
+✓ Análise de como o código está em conformidade
+✓ Exemplos de extensão (novos pagamentos, canais)
+✓ Justificativa técnica das decisões arquiteturais
+✓ Pontos-chave para defesa de código
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ PERGUNTAS FREQUENTES:
+
+P: Preciso do Maven ou Gradle?
+R: NÃO! O projeto é Java puro. Basta javac e java (vem com JDK).
+
+P: Qual versão do Java?
+R: Java 8+. O código usa features padrão (generics, lambdas básicas).
+
+P: Por que não usar Spring ou outra framework?
+R: Para demonstrar entendimento REAL de SOLID sem "magia" de frameworks.
+
+P: Posso adicionar mais cenários?
+R: SIM! Modifique Main.java e adicione mais blocos de teste.
+
+P: Como preparar para defesa?
+R: Entenda cada princípio SOLID e aponte onde está implementado.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 PRÓXIMOS PASSOS:
+
+1. [ ] Descompactar o projeto
+2. [ ] Executar Main.java
+3. [ ] Ler README.md
+4. [ ] Entender cada classe
+5. [ ] Preparar para defesa
+6. [ ] Clonar para repositório GitHub (se necessário)
+7. [ ] Fazer push com commit antes do prazo
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                  SUCESSO NA ENTREGA DO PROJETO! 🎉                  ║
+╚══════════════════════════════════════════════════════════════════════╝
